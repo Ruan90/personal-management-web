@@ -1,0 +1,35 @@
+<div cdkMenuBar class="container-menu">
+    <!--<button class="example-menu-bar-item" cdkMenuItem [cdkMenuTriggerFor]="file">File</button>-->
+    <button class="example-menu-bar-item" cdkMenuItem (click)="acessoDashboard()">Dashboard</button>
+    <button class="example-menu-bar-item" cdkMenuItem (click)="acessoConhecimento()">Conhecimento</button>
+    <button class="example-menu-bar-item" cdkMenuItem>Agile</button>
+    <button class="example-menu-bar-item" cdkMenuItem 
+        [cdkMenuTriggerFor]="configuracoes"
+        *ngIf="user$ | async as user"
+    >
+        {{ user.name }}
+    </button>
+</div>
+
+<ng-template #configuracoes>
+    <div class="example-menu" cdkMenu>
+    <button class="example-menu-item" cdkMenuItem>Configurações</button>
+    <button class="example-menu-item" cdkMenuItem (click)="logout()">Sair</button>
+    </div>
+</ng-template>
+  
+  <!--<ng-template #file>
+    <div class="example-menu" cdkMenu>
+      <button class="example-menu-item" cdkMenuItem>Share</button>
+      <hr />
+      <button class="example-menu-item" cdkMenuItem [cdkMenuTriggerFor]="new_doc">
+        New <span>&#10148;</span>
+      </button>
+      <button class="example-menu-item" cdkMenuItem>Open</button>
+      <button class="example-menu-item" cdkMenuItem>Make a Copy</button>
+      <hr />
+      <button class="example-menu-item" cdkMenuItem [cdkMenuTriggerFor]="download">
+        Download <span>&#10148;</span>
+      </button>
+    </div>
+  </ng-template>-->

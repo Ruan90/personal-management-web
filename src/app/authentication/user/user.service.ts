@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { Injectable, OnInit } from '@angular/core';
+import { BehaviorSubject, catchError, map, mapTo, Observable, tap } from 'rxjs';
 import { TokenService } from '../token.service';
 import { User } from './user';
 
@@ -10,16 +11,31 @@ export class UserService {
 
   private userSubject = new BehaviorSubject<User>({});
 
-  constructor(private tokenService: TokenService) {
+  constructor(
+    private tokenService: TokenService,
+    private httpClient: HttpClient
+  ) {
+
     if(this.tokenService.checkToken()){
-      this.verifyToken();
+      this._verifyToken();
     }
   }
 
-  private verifyToken(){
-    const token = this.tokenService.getToken();
-    const user = {};
-    this.userSubject.next(user);
+  private async _verifyToken(){
+
+    const headers = new HttpHeaders()
+      .append('Authorization', this.tokenService.getToken())
+      .append('Content-Type', 'application/json')
+      .append('Accept', 'application/json');
+      
+      const confirmToken = await this.httpClient.get('http://127.0.0.1:8000/api/verify', 
+      { headers }
+      ).subscribe(
+        res => {
+          this.userSubject.next(res);
+        },
+        error => console.log('error', error)
+      );
   }
 
   getUser(){
@@ -28,7 +44,7 @@ export class UserService {
 
   setToken(token: string){
     this.tokenService.setToken(token);
-    this.verifyToken();
+    this._verifyToken();
   }
 
   logout(){

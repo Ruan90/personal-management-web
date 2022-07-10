@@ -8,19 +8,24 @@ import { UserService } from './user/user.service';
 })
 export class AuthenticationService {
 
-  constructor(private httpClient: HttpClient, private userService: UserService) { }
+  constructor(
+    private httpClient: HttpClient,
+    private userService: UserService
+  ) { }
 
-  authenticate(user: string, password: string): Observable<HttpResponse<any>>{
-    return this.httpClient.post('http://localhost:8000/user/login', {
-      user: user,
+  authenticate(email: string, password: string): Observable<HttpResponse<any>>{
+    return this.httpClient.post('http://localhost:8000/api/login', {
+      email: email,
       password: password
     },
-    { observe: 'response' }
+    { observe: 'response'}
     ).pipe(
       tap((res) => {
-        const authToken = res.headers.get('x-access-token') ?? '';
+
+        const authToken = res.headers.get('Authorization') ?? '';
         this.userService.setToken(authToken);
       })
     );
   }
+
 }
